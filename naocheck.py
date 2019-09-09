@@ -226,20 +226,9 @@ class VideoImage(threading.Thread):
             image.show()
             
     def takeImage(self):
-        root = tk.Toplevel()
-        root.overrideredirect(True)
-        width = root.winfo_screenwidth()
-        height = root.winfo_screenwidth()
-        root.geometry('%dx%d' % (640, 480))
-        displayCanvas = tk.Label(root)
-        displayCanvas.pack()
         naoImage = self.video.getImageRemote(self.subscriberID)
         self.saveImage(naoImage[6], naoImage[0], naoImage[1], 'RGB', 'PNG', 'camImage.png')
         #time.sleep(1)
-        img = ImageTk.PhotoImage(Image.open('camImage.png'))
-        displayCanvas.config(image=img)
-        root.after(20, lambda: video.takeImage())
-        root.mainloop()
 
     def takeRGBDimage(self, number, delay=0):
         '''
@@ -301,7 +290,26 @@ def main(robot_IP, robot_PORT=9559):
         #       video.setCamera(2)      # xtion camera (optional)
         #        video.getImageInfo()
                 
-                video.takeImage()
+                #video.takeImage()
+
+                root = tk.Toplevel()
+                root.overrideredirect(True)
+                width = root.winfo_screenwidth()
+                height = root.winfo_screenwidth()
+                root.geometry('%dx%d' % (640, 480))
+                displayCanvas = tk.Label(root)
+                displayCanvas.pack()
+                
+                #oneTime = True
+                while True:
+                    video.takeImage()
+                    img = ImageTk.PhotoImage(Image.open('camImage.png'))
+                    displayCanvas.config(image=img)
+                    root.update_idletasks()
+                    root.update()
+
+                root.mainloop()
+                #root.mainloop()
         #       video.takeRGBDimage(2000)
 
                 #video.cameraSpeedTest(0)    
